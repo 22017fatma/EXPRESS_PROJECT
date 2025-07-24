@@ -1,11 +1,12 @@
 
 import express from 'express';
-import messagesController from '../controllers/messages.controller.js';
+import {getMessages,postMessages} from '../controllers/messages.controller.js';
+
 
 
 const messagesRouter = express.Router();
 
-messagesRouter.get('/',messagesController.getMessages);
-messagesRouter.post('/',messagesController.postMessages);
+messagesRouter.get('/',getMessages);
+messagesRouter.post('/',postMessages);
 
 export default messagesRouter;

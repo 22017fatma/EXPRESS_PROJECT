@@ -1,5 +1,5 @@
-
-import model from '../models/friends.model.js';
+import{AppError} from '../utils/AppError.utils.js';
+import {friends} from '../models/friends.model.js';
 function postFriend(req, res)  {
   //Client error 'bad req'
     if(!req.body.name){
@@ -9,28 +9,37 @@ function postFriend(req, res)  {
 };
     const newFriend = 
     {
-    id: model.length,
+    id: friends.length,
     name: req.body.name 
     };
-    model.push(newFriend);
+    friends.push(newFriend);
     res.json(newFriend);
 }
-
+ 
 function getFriends(req, res) {
-    res.json(model);
+    res.json(friends);
 }
-function getFriend(req, res) {
+function getFriend(req, res,next) {
+    try{
     const friendId = Number(req.params.friendId);
-    const friend = model[friendId];
+    const friend = friends[friendId];
     if (friend) {
-        res.status(200).json(friend);
-    }else{
-        res.status(404).json({
-        error:'friend does not exist'
-        });
-    } 
+       return res.status(200).json(friend);
+        
+    }else
+        throw new AppError(`Friend with ID ${friendId} not found`, 404);
+        }catch (error) {
+        next(error);
+        }
+
+    
 }
-export default{
+
+
+
+
+
+export {
     postFriend,
     getFriends,
     getFriend

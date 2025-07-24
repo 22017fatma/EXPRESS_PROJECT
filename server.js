@@ -2,9 +2,17 @@ import express from 'express';
 import friendsRouter from'./routes/friends.router.js';
 import messagesRouter from './routes/messages.router.js';
 
-import path from 'path'; // For serving static files
+
+import path from 'path'; 
 import { fileURLToPath } from 'url';
 import { dirname } from 'path';
+
+import { AppError } from './utils/AppError.utils.js';
+import { customError } from './middlewares/customError.middleware.js';
+import dotenv from 'dotenv';   
+dotenv.config();
+
+console.log(' ENVIRONMENT:', process.env.NODE_ENV);
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -26,8 +34,9 @@ app.use((req,res,next) => {
 });
 
 app.use('/site',express.static(path.join(__dirname,'public'))); // Serve static files from the 'public' directory
-// Middleware to parse JSON bodies
+
 app.use(express.json()); 
+
 
 app.get('/', (req, res) => {
   res.render('index', {
@@ -39,6 +48,13 @@ app.get('/', (req, res) => {
 app.use('/friends',friendsRouter);
 app.use('/messages',messagesRouter)
 
+app.use("/api/*route",(req,res,next)=>{
+  next(new AppError(`Can't find ${req.originalUrl} on this server!`, 404));
+});
+
+
+
+app.use(customError);
 
 app.listen(PORT, () => {
   console.log(`Listening on ${PORT}...`);

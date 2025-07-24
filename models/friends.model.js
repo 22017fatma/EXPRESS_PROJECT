@@ -11,6 +11,6 @@ const friends=[
     },
 ]
 
-export default{
+export {
     friends
 };
