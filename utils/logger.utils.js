@@ -4,6 +4,7 @@ import path from 'path';
 function logErrorToFile(err) {
     const logFilePath=path.join('logs','error.log')
     const errorLog = `
+    Environment: ${process.env.NODE_ENV}
     Time: ${new Date().toISOString()}
     Name: ${err.name}
     Message: ${err.message}
@@ -13,11 +14,11 @@ function logErrorToFile(err) {
         fs.mkdirSync('logs');
         }
     
-    fs.appendFile('error.log', errorLog, (error) => {
-        if (error) {
-            console.error('Failed to write to log file:', error);
-        }
-    });
+  fs.appendFile(logFilePath, errorLog, (error) => {
+  if (error) {
+    console.error('Failed to write to log file:', error);
+  }
+});
 }
 
 
